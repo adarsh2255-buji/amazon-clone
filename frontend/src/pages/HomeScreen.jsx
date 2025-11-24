@@ -2,16 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useStore } from '../context/StoreContext';
+import Carousel from '../components/Carousel';
 
 
 const HomeScreen = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    // const [error, setError] = useState('');
 
-    //Hooks for add to cart
-    const { state, dispatch } = useStore();
-    const navigate = useNavigate();
+  // Categories to display in the grid
+  const categories = [
+    { name: 'Mobile', title: 'Mobiles & Accessories', link: 'mobile' }, 
+     
+    { name: 'Jeans', title: 'Jeans & Denim', link: 'jeans' },          
+    { name: 'Headphones', title: 'Electronics & Gadgets', link: 'headphones' } ,
+   //  { name: 'Footwear', title: 'Footwear & Shoes', link: 'footwear' }, 
+  ];
+   
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,102 +35,72 @@ const HomeScreen = () => {
     fetchProducts();
   }, []);
 
-    const addToCartHandler = (product) => {
-    // Check if item exists in cart to increment
-    const existItem = state.cart.cartItems.find((x) => x.product === product._id);
-    const quantity = existItem ? existItem.qty + 1 : 1;
-
-    // Stock Check
-    if (product.countInStock < quantity) {
-      alert('Sorry. Product is out of stock');
-      return;
-    }
-
-    // Dispatch
-    dispatch({
-      type: 'CART_ADD_ITEM',
-      payload: { ...product, product: product._id, qty: quantity },
-    });
+    // Helper to find one image for the card
+const getImageForCategory = (catLink) => {
+    if (!products || products.length === 0) return "https://via.placeholder.com/300?text=Loading";
     
-    // Go to Cart (Amazon behavior simulation)
-    navigate('/cart'); 
+    // Special mapping for Electronics display card to look for Headphones in DB
+    const searchTerm = catLink === 'electronics' ? 'headphones' : catLink;
+
+    const found = products.find(p => 
+        p.category && p.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    console.log(found);
+    
+    return found?.image || "https://via.placeholder.com/300?text=No+Image";
   };
 
-
-
   if (loading) return <div className="text-center py-10">Loading...</div>;
-  if (error) return <div className="text-red-500 text-center py-10">{error}</div>;
+
+
+
 
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Results</h1>
-      <p className="text-sm text-gray-500 mb-6">Check each product page for other buying options. Price and other details may vary based on product size and colour.</p>
+   <div className="relative bg-gray-100 min-h-screen">
+      <Carousel />
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
-          <div key={product._id} className="bg-white border border-gray-100 rounded-sm p-4 flex flex-col h-full hover:shadow-md transition-shadow duration-200">
-            
-            {/* Image Area */}
-            <Link to={`/product/${product._id}`} className="flex justify-center items-center h-60 bg-gray-50 mb-4 rounded-sm overflow-hidden">
-               <img src={product.image} alt={product.name} className="h-full w-full object-contain p-2 mix-blend-multiply" />
-            </Link>
+      {/* Category Grid - Overlapping Carousel */}
+      <div className="container mx-auto px-4 relative z-10 -mt-20 lg:-mt-60 mb-8">
+         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((cat) => (
+               <div key={cat.name} className="bg-white p-5 shadow-sm z-20 flex flex-col h-[420px]">
+                  <h2 className="font-bold text-xl mb-4 text-gray-900 tracking-tight leading-snug">
+                    {cat.title}
+                  </h2>
+                  
+                  {/* Image Link -> Goes to Category Page */}
+                  <Link to={`/category/${cat.link}`} className="flex-grow mb-4 overflow-hidden cursor-pointer">
+                     <img 
+                        src={getImageForCategory(cat.name)} 
+                        alt={cat.name} 
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
+                     />
+                  </Link>
 
-            {/* Content */}
-            <div className="flex-1 flex flex-col">
-              
-              {/* Title/Brand & Description */}
-              <Link to={`/product/${product._id}`}>
-                <h2 className="font-bold text-lg leading-tight hover:text-[#c7511f] text-gray-900 mb-1">
-                  {product.brand || "Generic"} 
-                </h2>
-                <p className="text-sm text-gray-700 line-clamp-2 hover:text-[#c7511f] cursor-pointer mb-2 leading-snug">
-                    {product.name} - {product.description}
-                </p>
-              </Link>
-
-              {/* Rating */}
-              <div className="flex items-center mb-2">
-                 <div className="flex text-[#de7921] text-sm">
-                   {'★'.repeat(Math.floor(product.rating))}
-                   {'☆'.repeat(5 - Math.floor(product.rating))}
-                 </div>
-                 <span className="text-blue-600 text-xs ml-1 hover:underline cursor-pointer">({product.numReviews})</span>
-              </div>
-
-              {/* Price Block */}
-              <div className="mb-2">
-                 <div className="flex items-baseline">
-                    <span className="text-xs align-top relative top-0.5">₹</span>
-                    <span className="text-2xl font-medium px-0.5 text-gray-900">{Math.floor(product.price)}</span>
-                    <span className="text-xs align-top relative top-0.5">{String(product.price).split('.')[1] || '00'}</span>
-                    <span className="text-gray-500 text-xs ml-2 line-through">M.R.P: ₹{Math.round(product.price * 1.2)}</span>
-                 </div>
-                 <div className="text-xs text-gray-500 mt-1">
-                    FREE delivery <span className="font-bold text-gray-800">Tomorrow, 25 Nov</span>
-                 </div>
-              </div>
-
-              {/* Stock Warning (Only if < 5) */}
-              {product.countInStock < 5 && product.countInStock > 0 && (
-                  <div className="text-[#b12704] text-xs font-bold mb-3">
-                      Only {product.countInStock} left in stock.
-                  </div>
-              )}
-
-              {/* Add to Cart Button */}
-              <div className="mt-auto pt-2">
-                 <button 
-                    onClick={() => addToCartHandler(product)}
-                    className="bg-[#ffd814] hover:bg-[#f7ca00] border border-[#fcd200] rounded-full w-full sm:w-32 py-1.5 text-sm text-[#0F1111] shadow-sm active:shadow-inner"
-                 >
-                    Add to cart
-                 </button>
-              </div>
-
+                  {/* Text Link -> Goes to Category Page */}
+                  <Link to={`/category/${cat.link}`} className="text-[#007185] text-sm hover:text-[#C7511F] hover:underline mt-auto inline-block">
+                     See all offers
+                  </Link>
+               </div>
+            ))}
+         </div>
+         
+         {/* Horizontal Scrollable Product Feed (Best Sellers etc.) */}
+         <div className="bg-white p-6 mt-6 shadow-sm">
+            <h2 className="font-bold text-xl mb-4">Best Sellers in Sports, Fitness & Outdoors</h2>
+            <div className="flex overflow-x-auto space-x-6 pb-4 no-scrollbar">
+               {products.slice(0, 10).map(p => (
+                  <Link key={p._id} to={`/product/${p._id}`} className="min-w-[200px] max-w-[200px] cursor-pointer group">
+                     <div className="h-48 flex justify-center items-center bg-gray-50 mb-2">
+                        <img src={p.image} className="max-h-full max-w-full object-contain mix-blend-multiply p-2" alt={p.name} />
+                     </div>
+                     <div className="text-sm text-gray-900 line-clamp-2 group-hover:text-[#c7511f]">{p.name}</div>
+                     <div className="text-lg font-medium text-gray-900">₹{Math.floor(p.price)}</div>
+                  </Link>
+               ))}
             </div>
-          </div>
-        ))}
+         </div>
       </div>
     </div>
   )

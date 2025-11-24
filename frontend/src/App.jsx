@@ -13,6 +13,8 @@ import OrderScreen from "./pages/OrderScreen"
 import CheckoutScreen from "./pages/CheckoutScreen"
 import OrderSuccessScreen from "./pages/OrderSuccessScreen"
 import MyOrderScreen from "./pages/MyOrderScreen"
+import CategoryScreen from "./pages/CategoryScreen"
+import SearchScreen from "./pages/SearchScreen"
 // // 
 function App() {
  
@@ -35,6 +37,9 @@ return (
               <Route path="order-success/:id" element={<OrderSuccessScreen />} />
               <Route path="myorders" element={<MyOrderScreen />} />
               <Route path="order/:id" element={<OrderScreen />} />
+              <Route path="search/:keyword" element={<SearchScreen />} />
+              <Route path="category/:category" element={<CategoryScreen />} />
+
             </Route>
             <Route path="login" element={<LoginScreen />} />
               <Route path="register" element={<SignupScreen />} />

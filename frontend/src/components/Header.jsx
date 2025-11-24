@@ -1,13 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
-import { ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart } from "lucide-react";
 
 
 const Header = () => {
   const { state, dispatch } = useStore();
   const { cart, userInfo } = state;
   const navigate = useNavigate();
+  const [keyword, setKeyword] = useState("");
+
+   // Search Handler
+  const searchHandler = (e) => {
+    e.preventDefault(); // Prevent default form submission if used in form
+    if (keyword.trim()) {
+      navigate(`/search/${keyword.trim()}`);
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      searchHandler(e);
+    }
+  };
 
   const logoutHandler = () => {
   dispatch({ type: 'USER_LOGOUT' });
@@ -41,24 +58,24 @@ const Header = () => {
             </div>
         </div>
 
-        {/* Search Bar */}
+       {/* Search Bar Section */}
         <div className="flex flex-1 h-10 rounded-md overflow-hidden focus-within:ring-3 focus-within:ring-[#febd69]">
-            {/* Category Dropdown (Visual Only) */}
             <div className="hidden sm:flex bg-[#e6e6e6] hover:bg-[#d4d4d4] text-gray-600 px-3 items-center text-xs border-r border-gray-300 cursor-pointer">
-                All 
-                <svg className="w-2.5 h-2.5 ml-1 fill-current text-gray-600" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                All <svg className="w-2.5 h-2.5 ml-1 fill-current text-gray-600" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
             </div>
-            {/* Input */}
-                  <input 
-                     type="text" 
-                     placeholder="Search Amazon.in" 
-                     className="grow w-full p-2 text-black outline-none h-full bg-white placeholder-gray-500 border border-gray-300" 
-                  />
-            {/* Search Button */}
-            <button className="bg-[#febd69] hover:bg-[#f3a847] text-black px-4 h-full flex items-center justify-center">
-                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                 </svg>
+            <input 
+              type="text" 
+              placeholder="Search Amazon.in" 
+              className="flex-grow w-full p-2 text-black outline-none h-full bg-white placeholder-gray-500 border border-gray-300"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <button 
+              onClick={searchHandler}
+              className="bg-[#febd69] hover:bg-[#f3a847] text-black px-4 h-full flex items-center justify-center"
+            >
+                 <Search className="h-5 w-5" />
             </button>
         </div>
 

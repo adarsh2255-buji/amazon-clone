@@ -110,6 +110,21 @@ export const createProduct = async (req, res, next) => {
     next(error);
   }
 };
+// @desc    Get products by category
+// @route   GET /api/products/category/:category
+// @access  Public
+export const getProductsByCategory = async (req, res, next) => {
+  try {
+    const category = req.params.category;
+    // Regex for case-insensitive matching
+    const products = await Product.find({ 
+      category: { $regex: new RegExp(category, "i") } 
+    });
+    res.json(products);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // @desc    Update a product
 // @route   PUT /api/products/:id
