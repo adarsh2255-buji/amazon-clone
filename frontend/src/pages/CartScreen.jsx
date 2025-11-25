@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
-import { CheckCircle, ChevronRight, Plus, Trash2 } from 'lucide-react';
+import { CheckCircle, ChevronRight, Plus, Minus } from 'lucide-react';
 
 const CartScreen = () => {
     const navigate = useNavigate();
@@ -73,10 +73,10 @@ const CartScreen = () => {
                                 {/* Quantity Pill */}
                                 <div className="flex items-center border border-gray-300 rounded-lg shadow-sm bg-[#F0F2F2] h-8">
                                    <button 
-                                      onClick={() => removeItemHandler(item.product)}
+                                      onClick={() => item.qty > 1 ? updateCartHandler(item, item.qty - 1) : removeItemHandler(item.product)}
                                       className="px-2.5 h-full border-r border-gray-300 hover:bg-gray-200 rounded-l-lg flex items-center justify-center"
                                    >
-                                      <Trash2 className="w-4 h-4 text-gray-600" />
+                                      <Minus className="w-4 h-4 text-gray-600" />
                                    </button>
                                    <div className="px-3 text-sm font-bold bg-white h-full flex items-center border-r border-gray-300">
                                       {item.qty}

@@ -58,11 +58,14 @@ const getImageForCategory = (catLink) => {
 
   return (
    <div className="relative bg-gray-100 min-h-screen">
-      <Carousel />
+      {/* Full-width Carousel */}
+      <div className="w-full">
+         <Carousel />
+      </div>
       
       {/* Category Grid - Overlapping Carousel */}
-      <div className="container mx-auto px-4 relative z-10 -mt-20 lg:-mt-60 mb-8">
-         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="w-full px-4 relative z-10 -mt-20 lg:-mt-60 mb-8">
+         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {categories.map((cat) => (
                <div key={cat.name} className="bg-white p-5 shadow-sm z-20 flex flex-col h-[420px]">
                   <h2 className="font-bold text-xl mb-4 text-gray-900 tracking-tight leading-snug">
@@ -87,7 +90,8 @@ const getImageForCategory = (catLink) => {
          </div>
          
          {/* Horizontal Scrollable Product Feed (Best Sellers etc.) */}
-         <div className="bg-white p-6 mt-6 shadow-sm">
+         <div className="w-full px-4 relative z-10">
+            <div className="max-w-7xl mx-auto bg-white p-6 mt-6 shadow-sm">
             <h2 className="font-bold text-xl mb-4">Best Sellers in Sports, Fitness & Outdoors</h2>
             <div className="flex overflow-x-auto space-x-6 pb-4 no-scrollbar">
                {products.slice(0, 10).map(p => (
@@ -99,6 +103,7 @@ const getImageForCategory = (catLink) => {
                      <div className="text-lg font-medium text-gray-900">₹{Math.floor(p.price)}</div>
                   </Link>
                ))}
+            </div>
             </div>
          </div>
       </div>
