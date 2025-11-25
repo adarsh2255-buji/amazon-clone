@@ -73,7 +73,7 @@ const getImageForCategory = (catLink) => {
                   </h2>
                   
                   {/* Image Link -> Goes to Category Page */}
-                  <Link to={`/category/${cat.link}`} className="flex-grow mb-4 overflow-hidden cursor-pointer">
+                  <Link to={`/category/${cat.link}`} className="grow mb-4 overflow-hidden cursor-pointer">
                      <img 
                         src={getImageForCategory(cat.name)} 
                         alt={cat.name} 

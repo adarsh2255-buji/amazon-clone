@@ -43,7 +43,7 @@ const CartScreen = () => {
                 {cartItems.map((item) => (
                   <div key={item.product} className="flex border-b border-gray-200 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
                     {/* Image */}
-                    <div className="w-44 h-44 flex-shrink-0 mr-4">
+                    <div className="w-44 h-44 shrink-0 mr-4">
                        <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                     </div>
                     
@@ -131,7 +131,7 @@ const CartScreen = () => {
                       ₹499
                    </div>
                    <div className="flex items-start text-xs text-[#007600]">
-                      <CheckCircle className="w-4 h-4 mr-1 flex-shrink-0 fill-[#007600] text-white" />
+                      <CheckCircle className="w-4 h-4 mr-1 shrink-0 fill-[#007600] text-white" />
                       <span>
                          <span className="font-bold">Your order is eligible for FREE Delivery.</span>
                          <br/><span className="text-black font-normal">Choose <Link to="#" className="text-[#007185] hover:underline">FREE Delivery</Link> option at checkout.</span>
